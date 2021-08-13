@@ -8,5 +8,70 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialActions"]
+}
+
+model Designer {
+  id      Int      @id @default(autoincrement())
+  name    String
+  outfits Outfit[]
+}
+
+model Guest {
+  id             Int          @id @default(autoincrement())
+  name           String
+  eventtoguest   EventToGuest @relation(fields: [eventToGuestId], references: [id])
+  purchases      Purchase[]
+  eventToGuestId Int
+}
+
+model Model {
+  id      Int      @id @default(autoincrement())
+  name    String
+  outfits Outfit[]
+}
+
+model EventToGuest {
+  id    Int     @id @default(autoincrement())
+  Guest Guest[]
+  Event Event[]
+}
+
+model Event {
+  id             Int          @id @default(autoincrement())
+  date           DateTime     @db.Date
+  theme          String
+  address        String
+  outfits        Outfit[]
+  eventtoguest   EventToGuest @relation(fields: [eventToGuestId], references: [id])
+  eventToGuestId Int
+
+  @@map("events")
+}
+
+model Outfit {
+  id         Int       @id @default(autoincrement())
+  season     String
+  price      Float
+  designer   Designer  @relation(fields: [designerId], references: [id], onDelete: Cascade)
+  designerId Int
+  model      Model     @relation(fields: [modelId], references: [id])
+  modelId    Int
+  purchase   Purchase? @relation(fields: [purchaseId], references: [id])
+  purchaseId Int?
+  event      Event     @relation(fields: [eventId], references: [id])
+  eventId    Int
+
+  @@map("outfits")
+}
+
+model Purchase {
+  id      Int      @id @default(autoincrement())
+  outfits Outfit[]
+  guest   Guest    @relation(fields: [guestId], references: [id], onDelete: Cascade)
+  guestId Int
+
+
+  @@map("purchases")
 }
