@@ -17,54 +17,54 @@ function getRamdomInt(array) {
 }
 
 async function seed() {
-  //   for await (const ele of array) {
-  //     await designer.create({
-  //       data: {
-  //         name: faker.name.findName(),
-  //         outfits: {
-  //           create: {
-  //             season: seasons[getRamdomInt(seasons)],
-  //             price: priceTags[getRamdomInt(priceTags)],
-  //             model: {
-  //               create: {
-  //                 name: faker.name.findName(),
-  //               },
-  //             },
-  //             event: {
-  //               create: {
-  //                 date: faker.date.future(1),
-  //                 address: faker.address.streetAddress(),
-  //                 theme: faker.music.genre(),
-  //               },
-  //             },
-  //           },
-  //         },
-  //       },
-  //     });
-  //   }
+  for await (const ele of array) {
+    await designer.create({
+      data: {
+        name: faker.name.findName(),
+        outfits: {
+          create: {
+            season: seasons[getRamdomInt(seasons)],
+            price: priceTags[getRamdomInt(priceTags)],
+            model: {
+              create: {
+                name: faker.name.findName(),
+              },
+            },
+            event: {
+              create: {
+                date: faker.date.future(1),
+                address: faker.address.streetAddress(),
+                theme: faker.music.genre(),
+              },
+            },
+          },
+        },
+      },
+    });
+  }
 
   const events = await event.findMany();
   const eventIds = events.map(({ id }) => id);
 
-  //   for await (const ele of array) {
-  //     await guest.create({
-  //       data: {
-  //         name: faker.name.findName(),
-  //       },
-  //     });
-  //   }
+  for await (const ele of array) {
+    await guest.create({
+      data: {
+        name: faker.name.findName(),
+      },
+    });
+  }
 
   const guests = await db.guest.findMany();
   const guestsIds = guests.map(({ id }) => id);
 
-  //   for await (const ele of array) {
-  //     await eventToGuest.create({
-  //       data: {
-  //         guestId: guestsIds[getRamdomInt(guestsIds)],
-  //         eventId: eventIds[getRamdomInt(eventIds)],
-  //       },
-  //     });
-  //   }
+  for await (const ele of array) {
+    await eventToGuest.create({
+      data: {
+        guestId: guestsIds[getRamdomInt(guestsIds)],
+        eventId: eventIds[getRamdomInt(eventIds)],
+      },
+    });
+  }
 
   let outfits = await outfit.findMany();
   outfits = outfits.slice(16, 20);
