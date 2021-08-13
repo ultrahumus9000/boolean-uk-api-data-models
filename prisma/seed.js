@@ -92,7 +92,6 @@ async function seed() {
   });
 
   await Promise.all(createPurchasesPromised);
-  console.log("purchase data", Promise.all(createPurchasesPromised));
 }
 
 // model Designer {
