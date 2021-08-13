@@ -19,11 +19,11 @@ model Designer {
 }
 
 model Guest {
-  id             Int          @id @default(autoincrement())
-  name           String
-  eventtoguest   EventToGuest @relation(fields: [eventToGuestId], references: [id])
-  purchases      Purchase[]
-  eventToGuestId Int
+  id        Int            @id @default(autoincrement())
+  name      String
+  events    EventToGuest[]
+  purchases Purchase[]
+
 }
 
 model Model {
@@ -33,26 +33,27 @@ model Model {
 }
 
 model EventToGuest {
-  id    Int     @id @default(autoincrement())
-  Guest Guest[]
-  Event Event[]
+  id      Int     @id @default(autoincrement())
+  guest   Guest[] @relation(fields: [guestId], references: [id])
+  guestId Int
+  event   Event[] @relation(fields: [eventId], references: [id])
+  eventId Int
 }
 
 model Event {
-  id             Int          @id @default(autoincrement())
-  date           DateTime     @db.Date
-  theme          String
-  address        String
-  outfits        Outfit[]
-  eventtoguest   EventToGuest @relation(fields: [eventToGuestId], references: [id])
-  eventToGuestId Int
+  id      Int            @id @default(autoincrement())
+  date    DateTime       @db.Date
+  theme   String
+  address String
+  outfits Outfit[]
+  guests  EventToGuest[]
 
   @@map("events")
 }
 
 model Outfit {
   id         Int       @id @default(autoincrement())
-  season     String
+  season     Season    @default(Summer)
   price      Float
   designer   Designer  @relation(fields: [designerId], references: [id], onDelete: Cascade)
   designerId Int
@@ -74,4 +75,11 @@ model Purchase {
 
 
   @@map("purchases")
+}
+
+enum Season {
+  Spring
+  Summer
+  Autumn
+  Winter
 }
