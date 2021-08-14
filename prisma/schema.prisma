@@ -33,10 +33,10 @@ model Model {
 }
 
 model EventToGuest {
-  id      Int     @id @default(autoincrement())
-  guest   Guest[] @relation(fields: [guestId], references: [id])
+  id      Int   @id @default(autoincrement())
+  guest   Guest @relation(fields: [guestId], references: [id])
   guestId Int
-  event   Event[] @relation(fields: [eventId], references: [id])
+  event   Event @relation(fields: [eventId], references: [id])
   eventId Int
 }
 
