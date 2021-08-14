@@ -86,3 +86,5 @@ enum Season {
   Autumn
   Winter
 }
+
+// resources code should write simple, for example, to update outfits should just go to outfit model

@@ -1,6 +1,5 @@
 const { eventToGuest, event, guest, purchase, outfit } = require("../database");
 const { errorHandler, getRamdomInt, checker } = require("../../helper");
-const db = require("../database");
 
 async function getAllGuests(req, res) {
   try {
@@ -135,7 +134,7 @@ async function postOneGuest(req, res) {
       });
 
       const eventsInfo = guestInfo.events;
-      console.log("line 138", eventsInfo);
+
       //model restrict same guest attend same event twice therefore no need to check
       const resultInfo = [];
       for await (const event of eventsInfo) {
@@ -167,6 +166,7 @@ async function postOneGuest(req, res) {
     res.json(error);
   }
 }
+
 async function updateOneGuest(req, res) {
   //update guest name, guest purchase, guest event however if the guest has alreay purchase item then he cannot modify attended events
 
@@ -189,8 +189,6 @@ async function updateOneGuest(req, res) {
             name,
           },
         });
-
-        console.log("line 192");
         res.json(result);
       } else {
         if (events) {
