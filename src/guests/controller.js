@@ -256,10 +256,8 @@ async function updateOneGuest(req, res) {
               },
             });
 
-            console.log("258 we are deleteing outfits");
             res.json(result);
           } else {
-            console.log("261 we are deleteing outfits");
             const result = await purchase.update({
               where: {
                 id: deletePurchase.id,
@@ -276,6 +274,23 @@ async function updateOneGuest(req, res) {
                 outfits: true,
               },
             });
+
+            const deleteCheck = await purchase.findUnique({
+              where: {
+                id: deletePurchase.id,
+              },
+              include: {
+                outfits: true,
+              },
+            });
+
+            if (deleteCheck.outfits.length === 0) {
+              const deletedResult = await purchase.delete({
+                where: {
+                  id: deletePurchase.id,
+                },
+              });
+            }
 
             res.json(result);
           }
