@@ -34,10 +34,12 @@ model Model {
 
 model EventToGuest {
   id      Int   @id @default(autoincrement())
-  guest   Guest @relation(fields: [guestId], references: [id])
+  guest   Guest @relation(fields: [guestId], references: [id], onDelete: Cascade)
   guestId Int
-  event   Event @relation(fields: [eventId], references: [id])
+  event   Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
   eventId Int
+
+  @@unique([guestId, eventId])
 }
 
 model Event {
@@ -47,6 +49,7 @@ model Event {
   address String
   outfits Outfit[]
   guests  EventToGuest[]
+
 
   @@map("events")
 }
@@ -61,8 +64,8 @@ model Outfit {
   modelId    Int
   purchase   Purchase? @relation(fields: [purchaseId], references: [id])
   purchaseId Int?
-  event      Event     @relation(fields: [eventId], references: [id])
-  eventId    Int
+  event      Event?    @relation(fields: [eventId], references: [id])
+  eventId    Int?
 
   @@map("outfits")
 }

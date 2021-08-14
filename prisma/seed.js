@@ -4,74 +4,85 @@ const { PrismaClient } = require("@prisma/client");
 const { address } = require("faker");
 
 const db = new PrismaClient();
-const { designer, model, purchase, event, outfit, eventToGuest } = db;
+const { designer, model, purchase, event, outfit, eventToGuest, guest } = db;
 
 const seasons = ["Spring", "Summer", "Autumn", "Winter"];
 const priceTags = [
   1000.0, 30790.0, 892.0, 700.0, 1250.0, 6789.0, 92340.0, 1236.0, 32456.0,
 ];
-const array = Array(30).fill("");
-
+const array = Array(20).fill("");
+// const array = [19, 20, 31, 2, 1, 12, 17, 10, 15, 20, 21, 22, 23, 34];
 function getRamdomInt(array) {
   return Math.floor(Math.random() * array.length);
 }
 
 async function seed() {
-  for await (const ele of array) {
-    await designer.create({
-      data: {
-        name: faker.name.findName(),
-        outfits: {
-          create: {
-            season: seasons[getRamdomInt(seasons)],
-            price: priceTags[getRamdomInt(priceTags)],
-            model: {
-              create: {
-                name: faker.name.findName(),
-              },
-            },
-            event: {
-              create: {
-                date: faker.date.future(1),
-                address: faker.address.streetAddress(),
-                theme: faker.music.genre(),
-              },
-            },
-          },
-        },
-      },
-    });
-  }
+  //   for await (const ele of array) {
+  //     await designer.create({
+  //       data: {
+  //         name: faker.name.findName(),
+  //         outfits: {
+  //           create: {
+  //             season: seasons[getRamdomInt(seasons)],
+  //             price: priceTags[getRamdomInt(priceTags)],
+  //             model: {
+  //               create: {
+  //                 name: faker.name.findName(),
+  //               },
+  //             },
+  //             event: {
+  //               create: {
+  //                 date: faker.date.future(1),
+  //                 address: faker.address.streetAddress(),
+  //                 theme: faker.music.genre(),
+  //               },
+  //             },
+  //           },
+  //         },
+  //       },
+  //     });
+  //   }
 
-  const events = await event.findMany();
-  const eventIds = events.map(({ id }) => id);
+  //   const events = await event.findMany();
+  //   const eventIds = events.map(({ id }) => id);
 
-  for await (const ele of array) {
-    await guest.create({
-      data: {
-        name: faker.name.findName(),
-      },
-    });
-  }
+  //   await outfit.updateMany({
+  //     where: {
+  //       id: {
+  //         gt: 5,
+  //       },
+  //     },
+  //     data: {
+  //       eventId: eventIds[getRamdomInt(eventIds)],
+  //     },
+  //   });
+
+  //   for await (const ele of array) {
+  //     await guest.create({
+  //       data: {
+  //         name: faker.name.findName(),
+  //       },
+  //     });
+  //   }
 
   const guests = await db.guest.findMany();
   const guestsIds = guests.map(({ id }) => id);
 
-  for await (const ele of array) {
-    await eventToGuest.create({
-      data: {
-        guestId: guestsIds[getRamdomInt(guestsIds)],
-        eventId: eventIds[getRamdomInt(eventIds)],
-      },
-    });
-  }
+  //   for await (const ele of array) {
+  //     await eventToGuest.create({
+  //       data: {
+  //         guestId: ele,
+  //         eventId: 5,
+  //       },
+  //     });
+  //   }
 
   let outfits = await outfit.findMany();
-  outfits = outfits.slice(16, 20);
+  outfits = outfits.slice(5, 10);
   const createPurchasesPromised = outfits.map(async (outfit) => {
     const guestsAttended = await eventToGuest.findMany({
       where: {
-        eventId: outfit.eventId,
+        eventId: 4,
       },
     });
 
