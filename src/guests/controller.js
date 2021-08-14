@@ -170,7 +170,7 @@ async function postOneGuest(req, res) {
 async function updateOneGuest(req, res) {
   //update guest name, guest purchase, guest event however if the guest has alreay purchase item then he cannot modify attended events
 
-  const { name, purchases, events, deleteEvent, deletePurchase } = req.body;
+  const { name, purchases, event, deleteEvent, deletePurchase } = req.body;
   const guestId = Number(req.params.id);
   try {
     const precheck = await checker(guest, guestId);
@@ -191,43 +191,37 @@ async function updateOneGuest(req, res) {
         });
         res.json(result);
       } else {
-        if (events) {
+        if (event) {
           // 2 user want to add more event he attend
-          const result = await guest.update({
-            where: {
-              id: guestId,
-            },
+          const result = await eventToGuest.create({
             data: {
-              name,
-              events: {
-                create: {
-                  eventId: events.id,
-                },
-              },
-            },
-            include: {
-              events: true,
+              eventId: event,
             },
           });
           res.json(result);
         } else if (deleteEvent) {
           // 1, user want to cancel the event he attened
 
-          const result = await guest.update({
+          const result = await eventToGuest.delete({
             where: {
-              id: guestId,
-            },
-            data: {
-              events: {
-                delete: {
-                  id: deleteEvent,
-                },
-              },
-            },
-            include: {
-              events: true,
+              id: deleteEvent,
             },
           });
+          //   guest.update({
+          //     where: {
+          //       id: guestId,
+          //     },
+          //     data: {
+          //       events: {
+          //         delete: {
+          //           id: deleteEvent,
+          //         },
+          //       },
+          //     },
+          //     include: {
+          //       events: true,
+          //     },
+          //   });
           res.json(result);
         } else {
           // find the purchase record first throuh which event but in real life it is not edidble after you started the show therefore no need to check for this case
