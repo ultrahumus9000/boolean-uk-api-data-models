@@ -67,6 +67,7 @@ model Outfit {
   event      Event?    @relation(fields: [eventId], references: [id])
   eventId    Int?
 
+  // @@unique([season, designerId, price]) need add topic
   @@map("outfits")
 }
 
