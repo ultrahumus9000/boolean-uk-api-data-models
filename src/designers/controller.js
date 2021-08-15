@@ -1,5 +1,9 @@
 const { designer, model, event } = require("../database");
-const { errorHandler, getRamdomInt, checker } = require("../../helper");
+const {
+  errorHandler,
+  getRamdomInt,
+  idExsitingchecker,
+} = require("../../helper");
 async function getAllDesigners(req, res) {
   try {
     const result = await designer.findMany();
@@ -95,7 +99,7 @@ async function postOneDesigner(req, res) {
 async function updateDesigner(req, res) {
   const updateInfo = req.body;
   const designerId = Number(req.params.id);
-  const precheck = await checker(designer, designerId);
+  const precheck = await idExsitingchecker(designer, designerId);
   console.log("precheck result", precheck);
   try {
     if (precheck) {
@@ -119,7 +123,7 @@ async function updateDesigner(req, res) {
 }
 async function deleteDesigner(req, res) {
   const designerId = Number(req.params.id);
-  const precheck = await checker(designer, designerId);
+  const precheck = await idExsitingchecker(designer, designerId);
 
   try {
     if (precheck) {

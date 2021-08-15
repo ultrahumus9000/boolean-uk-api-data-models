@@ -1,5 +1,5 @@
 const { event, model } = require("../database");
-const { errorHandler, getRamdomInt, checker } = require("../../helper");
+const { errorHandler, idExsitingchecker } = require("../../helper");
 
 async function getAllModels(req, res) {
   try {
@@ -16,7 +16,7 @@ async function getAllModels(req, res) {
 async function getOneModel(req, res) {
   const modelId = Number(req.params.id);
   try {
-    const precheck = await checker(model, modelId);
+    const precheck = await idExsitingchecker(model, modelId);
     if (precheck) {
       const result = await model.findUnique({
         where: {
@@ -49,7 +49,7 @@ async function addOneModel(req, res) {
 async function updateOneModel(req, res) {
   const modelId = Number(req.params.id);
   try {
-    const precheck = await checker(model, modelId);
+    const precheck = await idExsitingchecker(model, modelId);
     if (precheck) {
       const result = await model.update({
         where: {
@@ -68,7 +68,7 @@ async function updateOneModel(req, res) {
 async function deleteOneModel(req, res) {
   const modelId = Number(req.params.id);
   try {
-    const precheck = await checker(model, modelId);
+    const precheck = await idExsitingchecker(model, modelId);
     if (precheck) {
       const result = await model.delete({
         where: {

@@ -1,4 +1,4 @@
-const { checker } = require("../../helper");
+const { idExsitingchecker } = require("../../helper");
 const { event } = require("../database");
 
 async function getAllEvents(req, res) {
@@ -12,7 +12,7 @@ async function getAllEvents(req, res) {
 async function getOneEvent(req, res) {
   const eventId = Number(req.params.id);
   try {
-    const precheck = await checker(event, eventId);
+    const precheck = await idExsitingchecker(event, eventId);
     if (precheck) {
       res.json(precheck);
     } else {
@@ -98,7 +98,7 @@ async function updateOneEvent(req, res) {
   const eventId = Number(req.params.id);
 
   try {
-    const precheck = await checker(event, eventId);
+    const precheck = await idExsitingchecker(event, eventId);
     if (precheck) {
       const result = await event.update({
         where: {
@@ -117,7 +117,7 @@ async function updateOneEvent(req, res) {
 async function deleteOneEvent(req, res) {
   const eventId = Number(req.params.id);
   try {
-    const precheck = await checker(event, eventId);
+    const precheck = await idExsitingchecker(event, eventId);
     if (precheck) {
       const result = await event.delete({
         where: {

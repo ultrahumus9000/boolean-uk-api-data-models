@@ -1,5 +1,5 @@
 const { eventToGuest, event, guest, purchase, outfit } = require("../database");
-const { errorHandler, getRamdomInt, checker } = require("../../helper");
+const { errorHandler, idExsitingchecker } = require("../../helper");
 
 async function getAllGuests(req, res) {
   try {
@@ -12,7 +12,7 @@ async function getAllGuests(req, res) {
 async function getOneGuest(req, res) {
   const guestId = Number(req.params.id);
   try {
-    const precheck = await checker(guest, guestId);
+    const precheck = await idExsitingchecker(guest, guestId);
     if (precheck) {
       const result = await guest.findUnique({
         where: {
@@ -50,7 +50,7 @@ async function getOneGuestOrders(req, res) {
   const guestId = Number(req.params.id);
 
   try {
-    const precheck = await checker(guest, guestId);
+    const precheck = await idExsitingchecker(guest, guestId);
     if (precheck) {
       const result = await guest.findUnique({
         where: {
@@ -81,7 +81,7 @@ async function getOneGuestOrders(req, res) {
 async function getOneGuestTotalSpent(req, res) {
   const guestId = Number(req.params.id);
   try {
-    const precheck = await checker(guest, guestId);
+    const precheck = await idExsitingchecker(guest, guestId);
     if (precheck) {
       const rawResult = await guest.findUnique({
         where: {
@@ -173,11 +173,11 @@ async function updateOneGuest(req, res) {
   const { name, purchases, event, deleteEvent, deletePurchase } = req.body;
   const guestId = Number(req.params.id);
   try {
-    const precheck = await checker(guest, guestId);
+    const precheck = await idExsitingchecker(guest, guestId);
     if (precheck) {
       if (
         purchases === undefined &&
-        events === undefined &&
+        event === undefined &&
         deleteEvent === undefined &&
         deletePurchase === undefined
       ) {
@@ -196,6 +196,7 @@ async function updateOneGuest(req, res) {
           const result = await eventToGuest.create({
             data: {
               eventId: event,
+              guestId,
             },
           });
           res.json(result);
@@ -228,26 +229,44 @@ async function updateOneGuest(req, res) {
           //only modify purchase that guest bought, can add more outfit or reduce outfit order
           // can only add more outfit based on the event he attended this should assume that he attended it first
           if (purchases) {
-            const result = await guest.update({
+            // const result = await guest.update({
+            //   where: {
+            //     id: guestId,
+            //   },
+            //   data: {
+            //     purchases: {
+            //       create: {
+            //         outfits: {
+            //           connect: {
+            //             id: purchases.outfitId,
+            //           },
+            //         },
+            //       },
+            //     },
+            //   },
+            //   include: {
+            //     purchases: true,
+            //   },
+            // });
+
+            const result = await outfit.update({
               where: {
-                id: guestId,
+                id: purchases.outfitId,
               },
               data: {
-                purchases: {
-                  create: {
-                    outfits: {
-                      connect: {
-                        id: purchases.outfitId,
-                      },
+                purchase: {
+                  upsert: {
+                    update: {
+                      guestId,
+                    },
+                    create: {
+                      guestId,
                     },
                   },
                 },
               },
-              include: {
-                purchases: true,
-              },
             });
-
+            // could be achieved by purchases too
             res.json(result);
           } else {
             const result = await purchase.update({
